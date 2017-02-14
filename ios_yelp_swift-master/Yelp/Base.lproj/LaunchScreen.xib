@@ -28,7 +28,7 @@
                     <color key="textColor" red="0.98046517310000003" green="0.98046517310000003" blue="0.98046517310000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FooddaIcon" translatesAutoresizingMaskIntoConstraints="NO" id="ptK-qK-0La">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FooddaIcon2" translatesAutoresizingMaskIntoConstraints="NO" id="ptK-qK-0La">
                     <rect key="frame" x="129" y="209" width="222" height="222"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="222" id="3eY-yF-n4b"/>
@@ -53,6 +53,6 @@
         </view>
     </objects>
     <resources>
-        <image name="FooddaIcon" width="631" height="631"/>
+        <image name="FooddaIcon2" width="632" height="632"/>
     </resources>
 </document>
