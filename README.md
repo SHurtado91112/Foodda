@@ -1,6 +1,6 @@
 # Project 3 - **Foodda**
 
-![fooddaicon](https://cloud.githubusercontent.com/assets/11231583/22941242/b741042a-f2b2-11e6-9728-c010b9d48cef.png)
+![fooddaiconsmall](https://cloud.githubusercontent.com/assets/11231583/22941273/dcbbae9e-f2b2-11e6-84f3-13b42c8b9106.png)
 
 **Foodda** is a Yelp search app using the [Yelp API](http://www.yelp.com/developers/documentation/v2/search_api).
 
