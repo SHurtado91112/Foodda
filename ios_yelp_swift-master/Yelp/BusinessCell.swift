@@ -74,7 +74,16 @@ class BusinessCell: UITableViewCell
     override func awakeFromNib()
     {
         super.awakeFromNib()
+        
+        nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
         // Initialization code
+    }
+    
+    override func layoutSubviews()
+    {
+        super.layoutSubviews()
+        
+        nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
     }
 
     override func setSelected(_ selected: Bool, animated: Bool)

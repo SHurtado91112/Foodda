@@ -15,12 +15,19 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var dotLoader: DotsLoader!
+    var loading : Bool = false
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        tableView?.delegate = self
-        tableView?.dataSource = self
+        self.tableView?.delegate = self
+        self.tableView?.dataSource = self
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 120
+        
+        self.tableView.alpha = 0
         
         Business.searchWithTerm(term: "Thai", completion:
             { (businesses: [Business]?, error: Error?) -> Void in
@@ -52,6 +59,28 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
          }
          */
         
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        fetchNewDataFromServer()
+    }
+
+    // data fetcher function
+    func fetchNewDataFromServer() {
+        if(!loading)
+        {
+            self.dotLoader.alpha = 1
+            
+            
+            UIView.animate(withDuration: 0.3, animations: {
+                self.dotLoader.alpha = 0
+                self.tableView.alpha = 1
+            }, completion: { _ in
+                self.dotLoader?.removeFromSuperview()
+                self.loading = true
+            })
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
