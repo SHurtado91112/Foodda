@@ -21,8 +21,6 @@ class BusinessCell: UITableViewCell
     
     @IBOutlet weak var distanceLabel: UILabel!
     
-    @IBOutlet weak var moniesLabel: UILabel!
-    
     @IBOutlet weak var reviewCountLabel: UILabel!
     
     @IBOutlet weak var addressLabel: UILabel!
@@ -34,7 +32,11 @@ class BusinessCell: UITableViewCell
         didSet
         {
             nameLabel.text = business.name
-            businessImageView.setImageWith(business.imageURL!)
+            if(business.imageURL != nil)
+            {
+                businessImageView.setImageWith(business.imageURL!)
+            }
+            
             businessImageView.layer.cornerRadius = businessImageView.frame.size.width / 2
             businessImageView.clipsToBounds = true
             
@@ -45,29 +47,7 @@ class BusinessCell: UITableViewCell
             addressLabel.text = business.address
             reviewCountLabel.text = "\(business.reviewCount!) Reviews"
             ratingImageView.setImageWith(business.ratingImageURL!)
-            distanceLabel.text = business.distance
-            
-            let rand = Int(arc4random_uniform(4)+1)
-            
-            switch(rand)
-            {
-                case 1:
-                    moniesLabel.text = "$"
-                    break;
-                case 2:
-                    moniesLabel.text = "$$"
-                    break;
-                case 3:
-                    moniesLabel.text = "$$$"
-                    break;
-                case 4:
-                    moniesLabel.text = "$$$$"
-                    break;
-                default:
-                    break;
-            }
-            
-            
+            distanceLabel.text = business.distance        
         }
     }
     
