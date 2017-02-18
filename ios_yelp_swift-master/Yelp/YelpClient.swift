@@ -10,6 +10,7 @@ import UIKit
 
 import AFNetworking
 import BDBOAuth1Manager
+import CoreLocation
 
 // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
 let yelpConsumerKey = "vxKwwcR_NMQ7WaEiQBK_CA"
@@ -21,11 +22,12 @@ enum YelpSortMode: Int {
     case bestMatched = 0, distance, highestRated
 }
 
-class YelpClient: BDBOAuth1RequestOperationManager {
+class YelpClient: BDBOAuth1RequestOperationManager, CLLocationManagerDelegate {
     var accessToken: String!
     var accessSecret: String!
     
     //MARK: Shared Instance
+    var locationMananger = CLLocationManager()
     
     static let sharedInstance = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
     
@@ -34,6 +36,20 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     }
     
     init(consumerKey key: String!, consumerSecret secret: String!, accessToken: String!, accessSecret: String!) {
+        
+        // Ask for Authorisation from the User.
+        locationMananger = CLLocationManager()
+        
+        // For use in foreground
+        locationMananger.requestAlwaysAuthorization()
+        locationMananger.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled()
+        {
+            locationMananger.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationMananger.startUpdatingLocation()
+        }
+        
         self.accessToken = accessToken
         self.accessSecret = accessSecret
         let baseUrl = URL(string: "https://api.yelp.com/v2/")
@@ -49,9 +65,13 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     
     func searchWithTerm(_ term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
         // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
-        
+
+        let lat = locationMananger.location?.coordinate.latitude
+        let long = locationMananger.location?.coordinate.longitude
+        print("Curr: \(lat!), \(long!)")
+        let llParameter = "\(lat!),\(long!)"
         // Default the location to San Francisco
-        var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "37.785771,-122.406165" as AnyObject]
+        var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": llParameter as AnyObject]
         
         if sort != nil {
             parameters["sort"] = sort!.rawValue as AnyObject?
@@ -79,5 +99,11 @@ class YelpClient: BDBOAuth1RequestOperationManager {
                         failure: { (operation: AFHTTPRequestOperation?, error: Error) -> Void in
                             completion(nil, error)
                         })!
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+    {
+        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
+        print("locations = \(locValue.latitude) \(locValue.longitude)")
     }
 }

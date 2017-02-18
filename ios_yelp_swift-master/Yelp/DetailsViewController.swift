@@ -49,6 +49,8 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
     //third section
     @IBOutlet weak var tableView: UITableView!
     
+    var selfLocation : CLLocation! = CLLocation()
+    
     var span = MKCoordinateSpanMake(0.1, 0.1)
     var spanX = 0.1
     var spanY = 0.1
@@ -80,12 +82,13 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
         
         mapView.tintColor = UIColor.myMatteGold
         
-        let centerLocation = CLLocation(latitude: 37.7833, longitude: -122.4167)
+        self.selfLocation = locationManager.location
+        
         let destLocation = CLLocation(latitude: lat, longitude: long)
         
         addAnnotationAtCoordinate(coordinate: CLLocationCoordinate2D(latitude: lat , longitude: long))
         
-        goToLocation(location: centerLocation, destLoc: destLocation)
+        goToLocation(destLocation: destLocation)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -96,6 +99,8 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
+            
+            self.selfLocation = location
             
             span = MKCoordinateSpanMake(spanX, spanY)
             let region = MKCoordinateRegionMake(location.coordinate, span)
@@ -112,13 +117,17 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
         mapView.addAnnotation(annotation)
     }
 
-    func goToLocation(location: CLLocation, destLoc: CLLocation)
+    func goToLocation(destLocation: CLLocation)
     {
-        spanX = abs(location.coordinate.latitude-destLoc.coordinate.latitude) + 0.01
-        spanY = abs(location.coordinate.longitude-destLoc.coordinate.longitude) + 0.01
+        spanX = 3*abs(self.selfLocation.coordinate.latitude-destLocation.coordinate.latitude)
+        spanY = 3*abs(self.selfLocation.coordinate.longitude-destLocation.coordinate.longitude)
+        
+        print(spanX - 0.01)
+        print(spanY - 0.01)
         
         span = MKCoordinateSpanMake(spanX, spanY)
-        let region = MKCoordinateRegionMake(location.coordinate, span)
+        
+        let region = MKCoordinateRegionMake(self.selfLocation.coordinate, span)
         mapView.setRegion(region, animated: false)
     }
     
