@@ -18,18 +18,33 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
     //class variables
     @IBOutlet weak var mainDetailsView: UIView!
     @IBOutlet weak var nameLabel: UILabel!
+    var nameLabelText = ""
+    
     @IBOutlet weak var ratingImgView: UIImageView!
+    var ratingImg = UIImage()
+    
     @IBOutlet weak var reviewCountLabel: UILabel!
+    var reviewCountLabelText = ""
+    
     @IBOutlet weak var categoriesLabel: UILabel!
+    var categoriesText = ""
+    
     @IBOutlet weak var numberLabel: UILabel!
+    var numberText = ""
     
     //second view section variables
     
     @IBOutlet weak var secondDetailsView: UIView!
     @IBOutlet weak var localeImgView: UIImageView!
     @IBOutlet weak var addressLabel: UILabel!
+    var addressLabelText = ""
+    
     @IBOutlet weak var mapView: MKMapView!
+    var lat = 0.0
+    var long = 0.0
+    
     @IBOutlet weak var backImgView: UIImageView!
+    var backImgURL = URL(string: "")
     
     //third section
     @IBOutlet weak var tableView: UITableView!
@@ -40,6 +55,16 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
         
         
         self.title = "Details"
+        
+        nameLabel.text = nameLabelText
+        addressLabel.text = addressLabelText
+        ratingImgView.image = ratingImg
+        reviewCountLabel.text = reviewCountLabelText
+        backImgView.setImageWith(backImgURL!)
+        categoriesLabel.text = categoriesText
+        numberLabel.text = numberText
+        
+        localeImgView.image = UIImage(named: "MapIt1x")?.withRenderingMode(.alwaysTemplate)
         
         locationManager = CLLocationManager()
         locationManager.delegate = self

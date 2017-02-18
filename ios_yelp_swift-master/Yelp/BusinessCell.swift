@@ -27,6 +27,8 @@ class BusinessCell: UITableViewCell
     
     @IBOutlet weak var categoryLabel: UILabel!
     
+    var phoneNumber : String?
+    
     var business: Business!
     {
         didSet
@@ -47,7 +49,8 @@ class BusinessCell: UITableViewCell
             addressLabel.text = business.address
             reviewCountLabel.text = "\(business.reviewCount!) Reviews"
             ratingImageView.setImageWith(business.ratingImageURL!)
-            distanceLabel.text = business.distance        
+            distanceLabel.text = business.distance
+            phoneNumber = business.phoneNumber!
         }
     }
     

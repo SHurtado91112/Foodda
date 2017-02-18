@@ -168,6 +168,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         let cell = tableView.cellForRow(at: indexPath)
         
         cell?.selectionStyle = .none
+        
+        self.performSegue(withIdentifier: "detailSegue", sender: indexPath)
     }
     
     func dismissKeyboard(_ sender: UITapGestureRecognizer)
@@ -208,14 +210,32 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         // Dispose of any resources that can be recreated.
     }
     
-    /*
+
      // MARK: - Navigation
      
      // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
+    
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+     {
+        print("Comes")
+        print(segue.identifier!)
+            if(segue.identifier! == "detailSegue")
+            {
+                print("conditional met")
+                let vc = segue.destination as! DetailsViewController
+                
+                let cell = tableView.cellForRow(at: sender as! IndexPath) as! BusinessCell
+                
+                vc.nameLabelText = cell.nameLabel.text!
+                vc.addressLabelText = cell.addressLabel.text!
+                vc.reviewCountLabelText = cell.reviewCountLabel.text!
+                vc.ratingImg = cell.ratingImageView.image!
+                vc.backImgURL = cell.business.imageURL!
+                vc.categoriesText = cell.categoryLabel.text!
+                vc.numberText = cell.phoneNumber!
+                
+            }
      }
-     */
+
     
 }
