@@ -27,6 +27,8 @@ class BusinessCell: UITableViewCell
     
     @IBOutlet weak var categoryLabel: UILabel!
     
+    var coordinate : (Double, Double)!
+    
     var phoneNumber : String?
     
     var business: Business!
@@ -51,6 +53,7 @@ class BusinessCell: UITableViewCell
             ratingImageView.setImageWith(business.ratingImageURL!)
             distanceLabel.text = business.distance
             phoneNumber = business.phoneNumber!
+            coordinate = business.coordinate
         }
     }
     

@@ -49,12 +49,18 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
     //third section
     @IBOutlet weak var tableView: UITableView!
     
+    var span = MKCoordinateSpanMake(0.1, 0.1)
+    var spanX = 0.1
+    var spanY = 0.1
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
         
         self.title = "Details"
+        
+        print("Lat: \(lat) Long: \(long)")
         
         nameLabel.text = nameLabelText
         addressLabel.text = addressLabelText
@@ -72,8 +78,14 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
         locationManager.distanceFilter = 200
         locationManager.requestWhenInUseAuthorization()
         
+        mapView.tintColor = UIColor.myMatteGold
+        
         let centerLocation = CLLocation(latitude: 37.7833, longitude: -122.4167)
-        goToLocation(location: centerLocation)
+        let destLocation = CLLocation(latitude: lat, longitude: long)
+        
+        addAnnotationAtCoordinate(coordinate: CLLocationCoordinate2D(latitude: lat , longitude: long))
+        
+        goToLocation(location: centerLocation, destLoc: destLocation)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -84,15 +96,28 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            let span = MKCoordinateSpanMake(0.1, 0.1)
+            
+            span = MKCoordinateSpanMake(spanX, spanY)
             let region = MKCoordinateRegionMake(location.coordinate, span)
             mapView.setRegion(region, animated: false)
         }
     }
+    
+    // add an Annotation with a coordinate: CLLocationCoordinate2D
+    func addAnnotationAtCoordinate(coordinate: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = nameLabelText
+        
+        mapView.addAnnotation(annotation)
+    }
 
-    func goToLocation(location: CLLocation)
+    func goToLocation(location: CLLocation, destLoc: CLLocation)
     {
-        let span = MKCoordinateSpanMake(0.1, 0.1)
+        spanX = abs(location.coordinate.latitude-destLoc.coordinate.latitude) + 0.01
+        spanY = abs(location.coordinate.longitude-destLoc.coordinate.longitude) + 0.01
+        
+        span = MKCoordinateSpanMake(spanX, spanY)
         let region = MKCoordinateRegionMake(location.coordinate, span)
         mapView.setRegion(region, animated: false)
     }

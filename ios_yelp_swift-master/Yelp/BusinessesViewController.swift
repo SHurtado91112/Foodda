@@ -234,6 +234,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 vc.categoriesText = cell.categoryLabel.text!
                 vc.numberText = cell.phoneNumber!
                 
+                vc.lat = cell.coordinate.0
+                vc.long = cell.coordinate.1
+                
             }
      }
 
