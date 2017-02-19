@@ -27,6 +27,7 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 - [X] Access phone number information for details page from Search API
+- [X] Adding loading indicator - "DotsLoader" Copyright © 2016 Mathieu Bolard
 - [X] Added Review Table
    - [X] Custom call to Business API with verification; got reviews for data source from request
 - [X] Extends the fixed location: Can now use the user's location
