@@ -59,6 +59,26 @@ class YelpClient: BDBOAuth1RequestOperationManager, CLLocationManagerDelegate {
         self.requestSerializer.saveAccessToken(token)
     }
     
+    func businessWithId(_ id: String, completion: @escaping([NSDictionary]?, Error?) -> Void) -> AFHTTPRequestOperation
+    {
+         let parameters = id
+        
+        print(parameters)
+        
+        return self.get("business/\(id)", parameters: nil,
+                        success: { (operation: AFHTTPRequestOperation, response: Any) -> Void in
+                            if let response = response as? [String: Any]{
+                                let dictionaries = response["reviews"] as? [NSDictionary]
+                                if dictionaries != nil {
+                                    completion(Business.reviews(array: dictionaries!), nil)
+                                }
+                            }
+        },
+                        failure: { (operation: AFHTTPRequestOperation?, error: Error) -> Void in
+                            completion(nil, error)
+        })!
+    }
+    
     func searchWithTerm(_ term: String, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
         return searchWithTerm(term, sort: nil, categories: nil, deals: nil, completion: completion)
     }
@@ -70,7 +90,7 @@ class YelpClient: BDBOAuth1RequestOperationManager, CLLocationManagerDelegate {
         let long = locationMananger.location?.coordinate.longitude
         print("Curr: \(lat!), \(long!)")
         let llParameter = "\(lat!),\(long!)"
-        // Default the location to San Francisco
+        
         var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": llParameter as AnyObject]
         
         if sort != nil {

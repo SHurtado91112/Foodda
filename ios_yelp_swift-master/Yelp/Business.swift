@@ -18,8 +18,11 @@ class Business: NSObject {
     let reviewCount: NSNumber?
     let phoneNumber : String?
     var coordinate = (0.0, 0.0)
+    let busId: String?
     
     init(dictionary: NSDictionary) {
+        
+        print(dictionary)
         
         name = dictionary["name"] as? String
         
@@ -98,6 +101,23 @@ class Business: NSObject {
         {
             phoneNumber = ""
         }
+        
+        let id = dictionary["id"] as? String
+        if(id != nil)
+        {
+            busId = id
+        }
+        else
+        {
+            busId = ""
+        }
+    }
+    
+    class func reviews(array: [NSDictionary]) -> [NSDictionary]
+    {
+        let review = array
+        
+        return review
     }
     
     class func businesses(array: [NSDictionary]) -> [Business] {
@@ -115,5 +135,10 @@ class Business: NSObject {
     
     class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> Void) -> Void {
         _ = YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, completion: completion)
+    }
+    
+    class func businessWithId(id: String, completion: @escaping ([NSDictionary]?, Error?) -> Void)
+    {
+        _ = YelpClient.sharedInstance.businessWithId(id, completion: completion)
     }
 }

@@ -31,6 +31,10 @@ class BusinessCell: UITableViewCell
     
     var phoneNumber : String?
     
+    var id : String = ""
+    
+    var reviewArr : [NSDictionary] = [NSDictionary]()
+    
     var business: Business!
     {
         didSet
@@ -54,6 +58,7 @@ class BusinessCell: UITableViewCell
             distanceLabel.text = business.distance
             phoneNumber = business.phoneNumber!
             coordinate = business.coordinate
+            id = business.busId!
         }
     }
     

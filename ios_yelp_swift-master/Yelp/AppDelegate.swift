@@ -7,15 +7,18 @@
 //
 
 import UIKit
+import AFNetworkActivityLogger
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let activityLogger = AFNetworkActivityLogger.shared()
+        activityLogger?.level = .AFLoggerLevelInfo
+        activityLogger?.startLogging()
         return true
     }
 

@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class DetailsViewController: UIViewController, CLLocationManagerDelegate
+class DetailsViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource
 {
 
     var locationManager : CLLocationManager!
@@ -25,6 +25,8 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
     
     @IBOutlet weak var reviewCountLabel: UILabel!
     var reviewCountLabelText = ""
+    
+    var reviewArr = [NSDictionary]()
     
     @IBOutlet weak var categoriesLabel: UILabel!
     var categoriesText = ""
@@ -59,6 +61,13 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
     {
         super.viewDidLoad()
         
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        
+        self.mapView.layer.borderColor = UIColor.mySalmonRed.cgColor
+        
+        self.mapView.layer.borderWidth = 5
+        self.mapView.layer.cornerRadius = 20
         
         self.title = "Details"
         
@@ -89,6 +98,11 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
         addAnnotationAtCoordinate(coordinate: CLLocationCoordinate2D(latitude: lat , longitude: long))
         
         goToLocation(destLocation: destLocation)
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        self.tableView.reloadData()
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -129,6 +143,46 @@ class DetailsViewController: UIViewController, CLLocationManagerDelegate
         
         let region = MKCoordinateRegionMake(self.selfLocation.coordinate, span)
         mapView.setRegion(region, animated: false)
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        print("Review Array Count: \(reviewArr.count)")
+        
+        return reviewArr.count
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let cell = tableView.cellForRow(at: indexPath)
+        
+        cell?.selectionStyle = .none
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reviewCell", for: indexPath) as! ReviewCell
+        
+        print("In Cell")
+        
+        let review = reviewArr[indexPath.row]
+        
+        let user = review["user"] as! NSDictionary
+        cell.nameText = user["name"] as? String
+        
+        let avatarURL = user["image_url"] as! String
+        
+        cell.avatarImgView.setImageWith(URL(string: avatarURL)!)
+        
+        cell.excerptText = review["excerpt"] as? String
+        
+        cell.nameLabel.text = cell.nameText!
+        cell.excerptLabel.text = cell.excerptText!
+        
+        print("Cell Excerpt and Name:\(cell.nameText) & \(cell.excerptText)")
+        
+        return cell
     }
     
     override func didReceiveMemoryWarning()

@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import CoreLocation
 
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate
 {
     
     var businesses: [Business]!
+    var reviews: [NSDictionary]!
     
     var searchTerm = "Restaurants"
     let searchBar = UISearchBar()
@@ -20,6 +22,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBOutlet weak var dotLoader: DotsLoader!
     var loading : Bool = false
+    
+    var arrayLocation : [(CLLocation, String)]! = [(CLLocation, String)]()
     
     override func viewDidLoad()
     {
@@ -103,6 +107,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 self.businesses = businesses
                 
+                self.arrayLocation =  [(CLLocation, String)]()
+
                 self.tableView.reloadData()
                 
                 if let businesses = businesses
@@ -159,7 +165,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         
         cell.business = businesses[indexPath.row]
-        
+        arrayLocation.append((CLLocation(latitude: cell.business.coordinate.0, longitude: cell.business.coordinate.1), cell.business.name!))
+    
         return cell
     }
     
@@ -211,6 +218,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
 
+    @IBAction func mapAllBtnPressed(_ sender: Any)
+    {
+        self.performSegue(withIdentifier: "mapSegue", sender: self)
+    }
      // MARK: - Navigation
      
      // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -219,25 +230,45 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
      {
         print("Comes")
         print(segue.identifier!)
-            if(segue.identifier! == "detailSegue")
-            {
-                print("conditional met")
-                let vc = segue.destination as! DetailsViewController
+        
+        if(segue.identifier! == "detailSegue")
+        {
+            print("conditional met")
+            let vc = segue.destination as! DetailsViewController
+            
+            let cell = tableView.cellForRow(at: sender as! IndexPath) as! BusinessCell
+            
+            vc.nameLabelText = cell.nameLabel.text!
+            vc.addressLabelText = cell.addressLabel.text!
+            vc.reviewCountLabelText = cell.reviewCountLabel.text!
+            vc.ratingImg = cell.ratingImageView.image!
+            vc.backImgURL = cell.business.imageURL!
+            vc.categoriesText = cell.categoryLabel.text!
+            vc.numberText = cell.phoneNumber!
+            
+            vc.lat = cell.coordinate.0
+            vc.long = cell.coordinate.1
+            
+            
+            ////Reviews
+            Business.businessWithId(id: cell.id, completion: { (review: [NSDictionary]?, error: Error?) -> Void in
                 
-                let cell = tableView.cellForRow(at: sender as! IndexPath) as! BusinessCell
+                self.reviews = review
                 
-                vc.nameLabelText = cell.nameLabel.text!
-                vc.addressLabelText = cell.addressLabel.text!
-                vc.reviewCountLabelText = cell.reviewCountLabel.text!
-                vc.ratingImg = cell.ratingImageView.image!
-                vc.backImgURL = cell.business.imageURL!
-                vc.categoriesText = cell.categoryLabel.text!
-                vc.numberText = cell.phoneNumber!
+                if review != nil
+                {
+                   vc.reviewArr = self.reviews
+                    print("Business Reviews : \(self.reviews)")
+                }
                 
-                vc.lat = cell.coordinate.0
-                vc.long = cell.coordinate.1
-                
-            }
+            })
+        }
+        
+        if(segue.identifier! == "mapSegue")
+        {
+            let vc = segue.destination as! MapViewController
+            vc.arrayLocations = self.arrayLocation
+        }
      }
 
     
